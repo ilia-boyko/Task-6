@@ -1,0 +1,165 @@
+<html>
+<head>
+<script>
+function updatePrice() {
+  let s = document.getElementsByName("prodType");
+  let select = s[0];
+  let price = 0;
+  let prices = getPrices();
+  let priceIndex = parseInt(select.value) - 1;
+  if (priceIndex >= 0) {
+    price = prices.prodTypes[priceIndex];
+  }
+  
+  let count = document.getElementsByName("count1");
+  let c = parseInt(count[0].value);
+  let radioDiv = document.getElementById("radios");
+  radioDiv.style.display = (select.value == "2" ? "block" : "none");
+  
+  let radios = document.getElementsByName("prodOptions");
+  radios.forEach(function(radio) {
+    if (select.value == "2"){
+	if (radio.checked) {
+      let optionPrice = prices.prodOptions[radio.value];
+      if (optionPrice !== undefined) {
+        price += optionPrice;
+      }
+    }
+	}
+  });
+
+  let checkDiv = document.getElementById("checkboxes");
+  checkDiv.style.display = (select.value == "3" ? "block" : "none");
+
+  let checkboxes = document.querySelectorAll("#checkboxes input");
+  checkboxes.forEach(function(checkbox) {
+    if (select.value == "3"){
+    if (checkbox.checked) {
+      let propPrice = prices.prodProperties[checkbox.name];
+      if (propPrice !== undefined) {
+        price += propPrice;
+      }
+    }
+	}
+  });
+  let prodPrice = document.getElementById("prodPrice");
+  if(!Number.isInteger(c)){
+  prodPrice.innerHTML = "Количество должно быть целым числом";
+  }
+  else{
+  prodPrice.innerHTML = "Стоимость: " + c*price + " рублей";
+  }
+}
+
+function getPrices() {
+  return {
+    prodTypes: [15, 50, 10],
+    prodOptions: {
+      option2: 25,
+      option3: 50,
+    },
+    prodProperties: {
+      prop1: 5,
+      prop2: 10,
+    }
+  };
+}
+function isNumber(value) {
+      if(value instanceof Number)
+      value = value.valueOf();
+      return  isFinite(value) && value === parseFloat(value, 10);
+    }
+function calc(){
+let price = document.getElementsByName("price");
+let count = document.getElementsByName("count");
+let p = parseFloat(price[0].value);
+if(!isNumber(p)){
+alert("Введите число в поле цена");
+return false;
+}
+let c = parseFloat(count[0].value);
+if(!Number.isInteger(c)){
+alert("Количество должно быть целым числом");
+return false;
+}
+let calc = parseFloat(count[0].value) * parseFloat(price[0].value);
+document.getElementById("result").innerHTML = parseFloat(count[0].value) * parseFloat(price[0].value);
+document.getElementById("result").innerHTML = "Стоимость: "+calc+" рублей";
+return false;
+}
+function onClick() {
+      return calc();
+    }
+window.addEventListener('DOMContentLoaded', function (event) {
+       console.log("DOM fully loaded and parsed");
+       let b = document.getElementById("button");
+       b.addEventListener("click", onClick);
+
+  let radioDiv = document.getElementById("radios");
+  radioDiv.style.display = "none";
+  
+  let s = document.getElementsByName("prodType");
+  let select = s[0];
+  select.addEventListener("change", function(event) {
+    let target = event.target;
+    console.log(target.value);
+    updatePrice();
+  });
+   
+  let radios = document.getElementsByName("prodOptions");
+  radios.forEach(function(radio) {
+    radio.addEventListener("change", function(event) {
+      let r = event.target;
+      console.log(r.value);
+      updatePrice();
+    });
+  });
+ 
+  let checkboxes = document.querySelectorAll("#checkboxes input");
+  checkboxes.forEach(function(checkbox) {
+    checkbox.addEventListener("change", function(event) {
+      let c = event.target;
+      console.log(c.name);
+      console.log(c.value);
+      updatePrice();
+    });
+  });
+
+  updatePrice();
+});
+</script>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Калькулятор стоимости заказа</legend>
+<p><label for="price">Цена:</label><input name="price" type="text"></p>
+<p><label for="count">Количество:</label><input name="count" type="text"></p>
+<p><button id="button" type="button">Рассчитать стоимость</button></p>
+<div id="result"></div>
+</fieldset>
+</form>
+<form>
+  <fieldset>
+  <legend>Калькулятор стоимости товара</legend>
+  <p><label for="count1">Количество:</label><input name="count1" type="text"></p>
+  Тип товара:
+      <select name="prodType">
+      <option value="1">Ручка</option>
+      <option value="2">Тетрадь</option>
+      <option value="3">Карандаш</option>
+    </select>
+    <div id="radios">
+      <label><input type="radio" name="prodOptions" value="option1"> 12 листов</label>
+      <label><input type="radio" name="prodOptions" value="option2"> 48 листов</label>
+      <label><input type="radio" name="prodOptions" value="option3"> 96 листов</label>
+    </div>
+    <div id="checkboxes">
+      <label><input type="checkbox" name="prop1"> Заточенный</label>
+      <label><input type="checkbox" name="prop2"> С ластиком</label>
+    </div>
+  <div id="prodPrice">Выберите тип товара</div>
+  </fieldset>
+  </form>
+</body>
+</html>
