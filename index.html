@@ -98,6 +98,14 @@ window.addEventListener('DOMContentLoaded', function (event) {
   let radioDiv = document.getElementById("radios");
   radioDiv.style.display = "none";
   
+  let input1 = document.getElementsByName("count1");
+  let in1 = input1[0];
+  in1.addEventListener("change", function(event) {
+        let i = event.target;
+		console.log(in1.value);
+		updatePrice();
+  });
+  
   let s = document.getElementsByName("prodType");
   let select = s[0];
   select.addEventListener("change", function(event) {
